@@ -11,7 +11,7 @@ mongoose
         process.env.MONGO
     )
     .then(() => {
-        console.log("MongoDB is connected");
+        console.log("MongoDB terhubung");
     }).catch(err => {
         console.log(err);
     });
@@ -21,8 +21,18 @@ const app = express();
 app.use(express.json());
 
 app.listen(3000, () => {
-    console.log("Server is running on port 3000")
+    console.log("Server berjalan pada port 3000")
 });
 
 app.use('/api/user', userRoutes);
 app.use('/api/auth', authRoutes);
+
+app.use((err, req, res, next) => {
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Galat Server Internal';
+    res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message
+    });
+});
